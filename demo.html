@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <meta name="description" content="Panorama — A-Frame">
+    <style>
+        .wrap{
+            position: fixed;
+            top:0;
+            left:0;
+            right: 0;
+            bottom: 0;
+        }
+    </style>
+    <script src="dist/aframe.min.js"></script>
+    <script src="dist/aframe-reverse-look-controls-component.min.js"></script>
+    <script src="dist/aframe-event-set-component.min.js"></script>
+    <script src="dist/aframe-mouse-cursor-component.min.js"></script>
+    <script src="dist/aframe-text-component.min.js"></script>
+    <!--<script src="dist/aframe-html-shader.min.js"></script>-->
+    <script src="dist/aframe-look-at-component.min.js"></script>
+
+</head>
+<body>
+    <div class="wrap">
+        <a-scene embedded>
+            <a-assets>
+                <img id="bg" src="img/2.jpg">
+                <!--<img id="pdx" src="img/portland.png">-->
+            </a-assets>
+            <a-sky src="#bg" rotation="0 0 0"></a-sky>
+            <!--<a-entity text="text:Jiangcheng" material="color: #000000" position="0.75 0.2 -3" scale="0.1 0.1 0.1" ></a-entity>-->
+            <!--<a-entity id="clickMe" position="-3 1 -3" text="text:CLICK ME;size:.5;"-->
+                      <!--event-set="_event: mouseenter; material.color: yellowgreen; scale: 2 1 1,_event: click; material.color: skyblue; scale: 1 1 1"-->
+                      <!--material="color: #000000"  scale="1 1 1" look-at=""></a-entity>-->
+            <!--<a-entity text="text:Jianghuan" material="color: #000000"  rotation="0 180 0" position="-1.3 0.3 5" scale="0.2 0.2 0.2" ></a-entity>-->
+            <!--<a-entity text="text:Liaoxuanjin" material="color: #000000"  rotation="0 180 0" position="0 0.4 5" scale="0.2 0.2 0.2" ></a-entity>-->
+            <!--<a-entity text="text:Xuyun" material="color: #ffffff"  rotation="0 45 0" position="-5.6 -2.6 -0.8" scale="0.2 0.2 0.2" ></a-entity>-->
+            <!--<a-entity scale="0.2 0.2 0.2" position="0 0 -3" >-->
+                <!--<a-image src="#pdx" width="10" height="5" rotation="20 40 30"></a-image>-->
+            <!--</a-entity>-->
+
+
+            <!--<a-entity id="camera" camera reverse-look-controls mouse-cursor>-->
+                <!--<a-entity  cursor></a-entity>-->
+            <!--</a-entity>-->
+            <!--<a-entity id="cube" geometry="primitive: box" material="color: blue" position="2 0 -3"></a-entity>-->
+        </a-scene>
+    </div>
+
+
+
+    <script>
+
+        var delta = 3;
+        var num = 80;
+        var timer = -1;
+        var interval = [40,100];
+        var zoom = function(event){
+            var cam = document.querySelector('#camera');
+            var camConf = cam.getAttribute('camera');
+            if (event.deltaY > 0 && num < interval[1]){
+                num += delta;
+            }else if (event.deltaY < 0 && num > interval[0]){
+                num -= delta;
+            }
+            camConf['fov'] = num;
+            cam.setAttribute('camera',camConf);
+        };
+
+        document.body.onmousewheel = function(event){
+            event = event || window.event;
+            clearTimeout(timer);
+            timer = setTimeout(function(){
+                zoom(event);
+            }, 0)
+        };
+
+
+        document.querySelector('#cube').addEventListener('mouseenter', function () {
+            this.setAttribute('material', 'color', 'red');
+        });
+        document.querySelector('#cube').addEventListener('mouseleave', function () {
+            this.setAttribute('material', 'color', 'blue');
+        });
+
+        document.querySelector('#clickMe').addEventListener('click',function(){
+            this.setAttribute('material', 'color', 'blue');
+
+            alert('I was clicked!');
+        })
+
+    </script>
+</body>
+</html>
