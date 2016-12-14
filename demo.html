@@ -11,6 +11,16 @@
             left:0;
             right: 0;
             bottom: 0;
+            z-index: 1;
+        }
+        .info{
+            position: fixed;
+            width: 200px;
+            height: 100px;
+            background: #fff;
+            top:0;
+            left:0;
+            z-index: 2;
         }
     </style>
     <script src="dist/aframe.min.js"></script>
@@ -21,9 +31,11 @@
     <!--<script src="dist/aframe-html-shader.min.js"></script>-->
     <script src="dist/aframe-look-at-component.min.js"></script>
 
+
 </head>
 <body>
     <div class="wrap">
+        <div class="info"></div>
         <a-scene embedded>
             <a-assets>
                 <img id="bg" src="img/2.jpg">
@@ -42,8 +54,7 @@
             </a-entity>
 
 
-            <a-entity id="camera" camera reverse-look-controls mouse-cursor>
-                <a-entity  cursor></a-entity>
+            <a-entity id="camera" camera reverse-look-controls mouse-cursor rotation="0 -90 0">
             </a-entity>
             <a-entity id="cube" geometry="primitive: box" material="color: blue" position="2 0 -3"></a-entity>
         </a-scene>
