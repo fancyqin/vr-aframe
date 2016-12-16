@@ -18,7 +18,7 @@
             width: 200px;
             height: 100px;
             background: #fff;
-            top:0;
+            bottom:0;
             left:0;
             z-index: 2;
         }
@@ -55,44 +55,60 @@
 
 <script>
 
-    var delta = 3;
-    var num = 80;
-    var timer = -1;
-    var interval = [40,100];
-    var zoom = function(event){
-        var cam = document.querySelector('#camera');
-        var camConf = cam.getAttribute('camera');
-        if (event.deltaY > 0 && num < interval[1]){
-            num += delta;
-        }else if (event.deltaY < 0 && num > interval[0]){
-            num -= delta;
-        }
-        camConf['fov'] = num;
-        cam.setAttribute('camera',camConf);
+    var scene = document.querySelector("a-scene");
+    var camera = document.querySelector("#camera");
+    var rftimer = null;
+    //loop
+    var loop = function () {
+        var delta = 3;
+        var num = 80;
+        var timer = -1;
+        var interval = [40,100];
+        var zoom = function(event){
+            var cam = document.querySelector('#camera');
+            var camConf = cam.getAttribute('camera');
+            if (event.deltaY > 0 && num < interval[1]){
+                num += delta;
+            }else if (event.deltaY < 0 && num > interval[0]){
+                num -= delta;
+            }
+            camConf['fov'] = num;
+            cam.setAttribute('camera',camConf);
+        };
+
+        document.body.onmousewheel = function(event){
+            event = event || window.event;
+            clearTimeout(timer);
+            timer = setTimeout(function(){
+                zoom(event);
+            }, 0)
+        };
     };
 
-    document.body.onmousewheel = function(event){
-        event = event || window.event;
-        clearTimeout(timer);
-        timer = setTimeout(function(){
-            zoom(event);
-        }, 0)
-    };
+    loop();
 
 
-
-    document.querySelector('#cube').addEventListener('click',function(){
-        this.setAttribute('material', 'color', 'green');
-        console.log('I was clicked!');
-    })
 
     window.requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
 
-    requestAnimationFrame(function(){
-        console.log(document.querySelector('#camera').components)
-    });
 
 
+    var adjustLoop = function(){
+        //todo
+
+        var x = camera.components.rotation.data.x;
+        var y = camera.components.rotation.data.y;
+
+
+
+        rftimer = requestAnimationFrame(adjustLoop)
+    };
+
+    if(scene.isMobile){
+        cancelAnimationFrame(rftimer);
+    }
+
+    adjustLoop();
 
 </script>
 </body>
