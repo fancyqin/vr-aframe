@@ -15,8 +15,8 @@
         }
         .info{
             position: fixed;
-            width: 200px;
-            height: 100px;
+            width: 300px;
+            height: 300px;
             background: #fff;
             bottom:0;
             left:0;
@@ -35,7 +35,11 @@
 </head>
 <body>
 <div class="wrap">
-    <div class="info"></div>
+    <div class="info">
+        <canvas id="eyes" width="300" height="300">
+
+        </canvas>
+    </div>
     <a-scene embedded>
         <a-assets>
             <img id="bg" src="img/3.jpg">
@@ -84,20 +88,107 @@
             }, 0)
         };
     };
-
     loop();
 
 
+    //EagleEyes
 
     window.requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
+
+    var locationData = {
+        id:'1',
+        location:'0,0,0',
+        scenes:[
+            {
+                id:'2',
+                location:'50,50,52',
+                scenes:[
+                    {
+                        id:'5',
+                        location:'-30,60,52'
+                    }
+                ]
+            },
+            {
+                id:'3',
+                location:'-40,30,52'
+            },
+            {
+                id:'4',
+                location:'10,-50,52'
+            }
+        ]
+    };
+
+
+    var drawEagleEyes = function(data){
+
+        var ctx = document.getElementById("eyes").getContext("2d");
+        var Centerdot = [150,150]; //起始中心点
+
+        if(!data){return;}
+
+        SetScenesLocation(data,Centerdot);
+
+        drawSceneDot(Centerdot[0],Centerdot[1]);
+
+
+        function drawSceneDot (x,y){
+            ctx.beginPath();
+            ctx.fillStyle  = "#425166";
+            ctx.arc(x, y, 8, 0, Math.PI*2, true);
+            ctx.fill();
+            ctx.beginPath();
+            ctx.fillStyle  = "#ffffff";
+            ctx.arc(x, y, 6, 0, Math.PI*2, true);
+            ctx.fill();
+        }
+        function drawSceneLine(x,y,dot){
+
+            var x1 = dot[0],y1 = dot[1];
+            var h = 20;
+            var cp1x =  x1 + (x - x1)/3;
+            var cp1y =  y1 - 20;
+            var cp2x = x1 + 2*(x - x1)/3;
+            var cp2y =  y + 20;
+
+            ctx.beginPath();
+            ctx.strokeStyle = '#000000';
+            ctx.lineWidth = 1;
+            ctx.moveTo(x1,y1);
+//            ctx.lineTo(x,y);
+            ctx.bezierCurveTo(cp1x, cp1y,cp2x,cp2y, x, y);
+            ctx.stroke();
+
+        }
+        function SetScenesLocation(item,dot){
+            var location = item['location'].split(",");
+            var x = dot[0] + Number(location[0]);
+            var y = dot[1] - Number(location[1]);
+
+            if(item['scenes'] && item['scenes'].length> 0){
+                item['scenes'].forEach(function(itm,k){
+                    SetScenesLocation(itm,[x,y]);
+                });
+            }
+
+            drawSceneLine(x,y,dot);
+            drawSceneDot(x,y);
+        }
+
+
+    };
+
+    drawEagleEyes(locationData);
+
 
 
 
     var adjustLoop = function(){
         //todo
+//        var x = camera.components.rotation.data.x;
+//        var y = camera.components.rotation.data.y;
 
-        var x = camera.components.rotation.data.x;
-        var y = camera.components.rotation.data.y;
 
 
 
