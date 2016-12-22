@@ -84,7 +84,7 @@
 
         var DotHTML = '<div id="{id}" class="eagle-dot"><span>{name}</span></div>';
         var centerDot = [150,450]; //起始中心点
-        var dotsInfo = [];
+        var drewDots = [];
 
         if(!data){return;}
 
@@ -92,14 +92,14 @@
         var entryID = data.result.entry_scene;
         var scenes = data.result.scenes;
 
-        getItemFromID(entryID,function(item){
-            //var el = document.createElement("div");
-            //el.innnerHTML =  DotHTML.replace('{{text}}',item.name);
-            //html.appendChild(el.firstElementChild);
-            $(html).append(DotHTML.replace('{name}',item.name).replace('{id}',item.id));
-            var x = centerDot[0] - $('#'+item.id).width()/ 2,
-                y = centerDot[1] - $('#'+item.id).height()/ 2;
-            $('#'+item.id).css({'left':x,'top':y});
+
+
+        drawSceneDot(centerDot[0],centerDot[1],entryID);
+
+        drewDots.push(entryID);
+
+        scenes.forEach(function(item,i){
+
         });
 
         function getItemFromID (id,cb){
@@ -110,42 +110,6 @@
             });
         }
 
-
-        //SetScenesLocation(data,CenterDot);
-
-        canvas.addEventListener('click', function(e) {
-            var x = e.pageX - canvas.getBoundingClientRect().left,
-                y = e.pageY - canvas.getBoundingClientRect().top;
-            dotsInfo.forEach(function(item) {
-                if (y > item.top && y < item.top + item.height && x > item.left && x < item.left + item.width) {
-                    ctx.save();
-                    ctx.beginPath();
-                    ctx.fillStyle  = "#ff0000";
-                    ctx.arc(item.left + item.width/2,item.top + item.width/2,item.width/2+1, 0, Math.PI*2, true);
-                    ctx.fill();
-
-                    console.log('Click '+item.item.name);
-                }
-            });
-
-        }, false);
-
-
-        canvas.addEventListener('mousemove', function(e) {
-            var x = e.pageX - canvas.getBoundingClientRect().left,
-                y = e.pageY - canvas.getBoundingClientRect().top;
-            canvas.style.cursor = 'default';
-            //todo mouseleave
-
-            dotsInfo.forEach(function(item) {
-                if (y > item.top && y < item.top + item.height && x > item.left && x < item.left + item.width) {
-                    canvas.style.cursor = 'pointer';
-                    //todo mouseenter
-
-                }
-            });
-
-        }, false);
 
 
 
@@ -160,16 +124,20 @@
             ctx.stroke();
         }
         //画点
-        function drawSceneDot (x,y){
-            var radius = 8;
-            ctx.beginPath();
-            ctx.fillStyle  = "#ffffff";
-            ctx.arc(x, y, radius, 0, Math.PI*2, true);
-            ctx.fill();
-            ctx.beginPath();
-            ctx.fillStyle  = "rgba(0,0,0,.5)";
-            ctx.arc(x, y, radius - 2, 0, Math.PI*2, true);
-            ctx.fill();
+
+        function drawSceneDot (x,y,id){
+            getItemFromID(id,function(item){
+                $(html).append(DotHTML.replace('{name}',item.name).replace('{id}',item.id));
+                var x1 = x - $('#'+item.id).width()/ 2,
+                    y1 = y - $('#'+item.id).height()/ 2;
+                $('#'+item.id).css({'left':x1,'top':y1});
+                if(item.child && item.child.length>0){
+                    item.child.forEach(function(itm,j){
+                        drawSceneDot(x - 50,y -50,itm.id)
+                    });
+
+                }
+            });
 
         }
         //画线
@@ -191,12 +159,6 @@
             drawDashLine(x1,y1,x,y,5);
 
         }
-        //画字
-        function drawSceneName(x,y,text){
-            ctx.font = "12px Arial";
-            ctx.fillStyle = '#eeeeee';
-            ctx.fillText(text,x+10,y+4);
-        }
 
         function SetScenesLocation(item,dot){
 
@@ -212,7 +174,6 @@
 
             drawSceneLine(x,y,dot);
             drawSceneDot(x,y,item);
-            drawSceneName(x,y,item.name);
         }
 
         //获取event 坐标
