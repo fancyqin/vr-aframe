@@ -1,0 +1,62 @@
+{
+"status":1,
+"result":{
+"id":"",
+"name":"",
+"entry_scene":"",
+"project_id":"3",
+"scenes":[
+{
+"id":"1",
+"name":"Aerial panorama",
+"child":[
+{
+"id":"2",
+"name":"Show room"
+},
+{
+"id":"3",
+"name":"Workshop"
+},
+{
+"id":"4",
+"name":"Show room 2"
+}
+]
+},
+{
+"id":"2",
+"name":"Show room"
+},
+{
+"id":"3",
+"name":"Workshop",
+"child":[
+{
+"id":"2",
+"name":"Show room"
+},
+{
+"id":"4",
+"name":"Show room 2"
+}
+]
+},
+{
+"id":"4",
+"name":"Show room 2",
+"child":[
+{
+"id":"5",
+"name":"Washroom"
+}
+]
+},
+{
+"id":"5",
+"name":"Washroom"
+}
+],
+"setting":{}
+}
+}

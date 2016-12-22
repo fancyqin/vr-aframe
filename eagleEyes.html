@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Eagle Eyes</title>
+    <style>
+        .wrap{
+            position: fixed;
+            top:0;
+            left:0;
+            right: 0;
+            bottom: 0;
+            z-index: 1;
+            background: #f3f5f7;
+        }
+
+        .eagle-eyes{
+            position: absolute;
+            top:50px;
+            left:50px;
+            width: 300px;
+            height: 500px;
+            z-index: 2;
+            background: rgba(0,0,0,0.5);
+        }
+        .eagle-eyes .eagle-canvas,.eagle-eyes .eagle-html{
+            position: absolute;
+            top:0;
+            left:0;
+            right: 0;
+            bottom: 0;
+            z-index: 3;
+        }
+        .eagle-eyes .eagle-html{
+            z-index: 4;
+        }
+        .eagle-eyes .eagle-dot{
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: #ffffff;
+            z-index: 5;
+        }
+        .eagle-eyes .eagle-dot span{
+            position: absolute;
+            display: block;
+            font-size:12px;
+            font-family: Arial,sans-serif;
+            color: #fff;
+            left: 20px;
+            top: 0;
+            max-width: 100px;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="wrap">
+        <div class="eagle-eyes">
+            <canvas id="eagleCANVAS" class="eagle-canvas">
+
+            </canvas>
+            <div id="eagleHTML" class="eagle-html">
+
+            </div>
+        </div>
+    </div>
+    <script src="http://cdn.bootcss.com/jquery/1.11.1/jquery.min.js"></script>
+    <script src="eagleEyesDIV.js"></script>
+</body>
+</html>

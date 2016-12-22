@@ -22,6 +22,23 @@
             left:0;
             z-index: 2;
         }
+        .info2{
+            position: fixed;
+            width: 300px;
+            height: 300px;
+            background: rgba(0,0,0,0.5);
+            bottom:320px;
+            left:0;
+            z-index: 2;
+        }
+        .eagle-eye{
+            position: absolute;
+            top:0;
+            left:0;
+            right: 0;
+            bottom: 0;
+            z-index: 3;
+        }
     </style>
     <script src="dist/aframe.min.js"></script>
     <script src="dist/aframe-reverse-look-controls-component.min.js"></script>
@@ -36,9 +53,10 @@
 <body>
 <div class="wrap">
     <div class="info">
-        <canvas id="eyes" width="300" height="300">
-
-        </canvas>
+        <canvas id="eyes" width="300" height="300"></canvas>
+    </div>
+    <div class="info2">
+        <div id="eagleEyes" class="eagle-eye"></div>
     </div>
     <a-scene embedded>
         <a-assets>
@@ -55,7 +73,7 @@
     </a-scene>
 </div>
 
-
+<script src="eagleEyesDIV.js"></script>
 <script src="eagleEyes.js"></script>
 <script>
 
