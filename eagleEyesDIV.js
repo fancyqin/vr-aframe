@@ -21,7 +21,7 @@
                     "child":[
                         {
                             "id":"2",
-                            "name":"Show room"
+                            "name":"Showroom"
                         },
                         {
                             "id":"3",
@@ -29,13 +29,13 @@
                         },
                         {
                             "id":"4",
-                            "name":"Show room 2"
+                            "name":"Showroom 2"
                         }
                     ]
                 },
                 {
                     "id":"2",
-                    "name":"Show room"
+                    "name":"Showroom"
                 },
                 {
                     "id":"3",
@@ -43,29 +43,30 @@
                     "child":[
                         {
                             "id":"2",
-                            "name":"Show room"
+                            "name":"Showroom"
                         },
                         {
                             "id":"4",
-                            "name":"Show room 2"
+                            "name":"Showroom 2"
                         }
                     ]
                 },
                 {
                     "id":"4",
-                    "name":"Show room 2",
-                    "child":[
-                        {
-                            "id":"5",
-                            "name":"Washroom"
-                        }
-                    ]
+                    "name":"Showroom 2",
+                    // "child":[
+                    //     {
+                    //         "id":"5",
+                    //         "name":"Washroom"
+                    //     }
+                    // ]
                 },
-                {
-                    "id":"5",
-                    "name":"Washroom"
-                }
-            ],
+                // {
+                //     "id":"5",
+                //     "name":"Washroom"
+                // }
+            ]
+            ,
             "setting":{}
         }
     };
@@ -96,11 +97,8 @@
 
         drawSceneDot(centerDot[0],centerDot[1],entryID);
 
-        drewDots.push(entryID);
 
-        scenes.forEach(function(item,i){
 
-        });
 
         function getItemFromID (id,cb){
             scenes.forEach(function(item,i){
@@ -127,23 +125,42 @@
 
         function drawSceneDot (x,y,id){
             getItemFromID(id,function(item){
-                $(html).append(DotHTML.replace('{name}',item.name).replace('{id}',item.id));
-                var x1 = x - $('#'+item.id).width()/ 2,
-                    y1 = y - $('#'+item.id).height()/ 2;
-                $('#'+item.id).css({'left':x1,'top':y1});
+                var dom = DotHTML.replace('{name}',item.name).replace('{id}',item.id);
+                $(html).append(dom);
+                var thisItem = $('#'+item.id);
+                var x1 = x - thisItem.width()/ 2,
+                    y1 = y - thisItem.height()/ 2;
+                thisItem.css({'left':x1,'top':y1});
+                drewDots.push(id);
                 if(item.child && item.child.length>0){
                     item.child.forEach(function(itm,j){
-                        drawSceneDot(x - 50,y -50,itm.id)
+                        drewDots.forEach(function(im,k){
+                           if(im === itm.id){
+                               return false;
+                           }
+                        });
+                        var newXY = getNewXY(x,y,item.child.length,j);
+                        drawSceneDot(newXY.x,newXY.y,itm.id);
+                        drawSceneLine(x,y,newXY.x,newXY.y);
+                        // drawSceneLine(150,450,79,379)
                     });
 
                 }
             });
 
         }
-        //画线
-        function drawSceneLine(x,y,dot){
+        function getNewXY(x,y,num,i) {
+            var l = 100;
+            var arg = (i+1)*Math.PI/(num+1);
+            var x1 = Math.floor(x - l*Math.cos(arg));
+            var y1 = Math.floor(y - l*Math.sin(arg));
 
-            var x1 = dot[0],y1 = dot[1];
+            return {x:x1,y:y1}
+        }
+
+        //画线
+        function drawSceneLine(x1,y1,x,y){
+
             var cp1x =  x1 + 3*(x - x1)/7;
             var cp1y =  y1;
             var cp2x = x1 + 4*(x - x1)/7;
@@ -153,28 +170,13 @@
             ctx.strokeStyle = '#999999';
             ctx.lineWidth = 1;
             ctx.moveTo(x1,y1);
-//            ctx.lineTo(x,y);  //直线
-//            ctx.bezierCurveTo(cp1x, cp1y,cp2x,cp2y, x, y); //贝塞尔曲线
-//            ctx.stroke();
-            drawDashLine(x1,y1,x,y,5);
+            // ctx.lineTo(x,y);  //直线
+           ctx.bezierCurveTo(cp1x, cp1y,cp2x,cp2y, x, y); //贝塞尔曲线
+            ctx.stroke();
+//             drawDashLine(x1,y1,x,y,5);
 
         }
 
-        function SetScenesLocation(item,dot){
-
-            var pos = item['position'].split(",");
-            var x = dot[0] + Number(pos[0]);
-            var y = dot[1] - Number(pos[1]);
-
-            if(item['scenes'] && item['scenes'].length> 0){
-                item['scenes'].forEach(function(itm,k){
-                    SetScenesLocation(itm,[x,y]);
-                });
-            }
-
-            drawSceneLine(x,y,dot);
-            drawSceneDot(x,y,item);
-        }
 
         //获取event 坐标
         function getEventPosition(ev){
