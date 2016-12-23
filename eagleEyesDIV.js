@@ -83,7 +83,7 @@
         var canvas = document.getElementById('eagleCANVAS');
         var ctx = canvas.getContext("2d");
 
-        var DotHTML = '<div id="{id}" class="eagle-dot"><span>{name}</span></div>';
+        var DotHTML = '<div id="{id}" class="eagle-dot-wrap"><div class="eagle-dot"></div><span>{name}</span></div>';
         var centerDot = [150,450]; //起始中心点
         var drewDots = [];
 
@@ -95,7 +95,6 @@
 
 
 
-        beginDraw(centerDot[0],centerDot[1],entryID);
 
 
 
@@ -107,11 +106,6 @@
                 }
             });
         }
-
-        //scenes.forEach(function (item,i) {
-        //    //drawSceneDot(x,y,id)
-        //})
-
 
 
         //画虚线
@@ -247,6 +241,22 @@
             }
             return {x: x, y: y};
         }
+
+
+
+        beginDraw(centerDot[0],centerDot[1],entryID);
+        $('#'+entryID).addClass('now');
+
+
+        $(html).on('click','.eagle-dot',function(e){
+            var id = $(this).parent().attr('id');
+            console.log(id);
+            //todo 切换场景
+            $('.eagle-dot-wrap').removeClass('now');
+            $('#'+id).addClass('now');
+            e.stopPropagation();
+        })
+
 
     };
 

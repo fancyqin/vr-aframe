@@ -36,8 +36,16 @@
         .eagle-eyes .eagle-html{
             z-index: 4;
         }
+        .eagle-eyes .eagle-dot-wrap{
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            z-index: 5;
+        }
         .eagle-eyes .eagle-dot{
             position: absolute;
+            left:0;
+            top:0;
             width: 12px;
             height: 12px;
             border-radius: 50%;
@@ -49,7 +57,7 @@
         .eagle-eyes .eagle-dot:hover{
             border-color: #E64545;
         }
-        .eagle-eyes .eagle-dot span{
+        .eagle-eyes .eagle-dot-wrap span{
             position: absolute;
             display: block;
             width: 100px;
@@ -61,6 +69,10 @@
             left: 20px;
             top: 0;
             max-width: 100px;
+        }
+        .eagle-eyes .eagle-dot-wrap.now .eagle-dot{
+            border-color: #E64545;
+            background: #E64545;
         }
 
     </style>
