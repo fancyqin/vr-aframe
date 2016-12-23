@@ -54,17 +54,17 @@
                 {
                     "id":"4",
                     "name":"Showroom 2",
-                    // "child":[
-                    //     {
-                    //         "id":"5",
-                    //         "name":"Washroom"
-                    //     }
-                    // ]
+                     "child":[
+                         {
+                             "id":"5",
+                             "name":"Washroom"
+                         }
+                     ]
                 },
-                // {
-                //     "id":"5",
-                //     "name":"Washroom"
-                // }
+                 {
+                     "id":"5",
+                     "name":"Washroom"
+                 }
             ]
             ,
             "setting":{}
@@ -95,19 +95,22 @@
 
 
 
-        drawSceneDot(centerDot[0],centerDot[1],entryID);
+        beginDraw(centerDot[0],centerDot[1],entryID);
 
 
 
 
-        function getItemFromID (id,cb){
-            scenes.forEach(function(item,i){
+        function getItemFromID (obj,id,cb){
+            obj.forEach(function(item,i){
                 if(id === item.id){
                     cb(item,i);
                 }
             });
         }
 
+        //scenes.forEach(function (item,i) {
+        //    //drawSceneDot(x,y,id)
+        //})
 
 
 
@@ -122,35 +125,89 @@
             ctx.stroke();
         }
         //画点
+        function drawSceneDot(x,y,item){
+            var dom = DotHTML.replace('{name}',item.name).replace('{id}',item.id);
+            $(html).append(dom);
+            var thisItem = $('#'+item.id);
+            var x1 = x - thisItem[0].offsetWidth/ 2,
+                y1 = y - thisItem[0].offsetHeight/ 2;
+            thisItem.css({'left':x1,'top':y1});
+            drewDots.push({id:item.id,x:x,y:y});
+        }
 
-        function drawSceneDot (x,y,id){
-            getItemFromID(id,function(item){
-                var dom = DotHTML.replace('{name}',item.name).replace('{id}',item.id);
-                $(html).append(dom);
-                var thisItem = $('#'+item.id);
-                var x1 = x - thisItem.width()/ 2,
-                    y1 = y - thisItem.height()/ 2;
-                thisItem.css({'left':x1,'top':y1});
-                drewDots.push(id);
+
+        function beginDraw (x,y,id){
+            getItemFromID(scenes,id,function(item){
+                drawSceneDot(x, y,item);
+                //如果第一个点有child
                 if(item.child && item.child.length>0){
                     item.child.forEach(function(itm,j){
-                        drewDots.forEach(function(im,k){
-                           if(im === itm.id){
-                               return false;
-                           }
-                        });
                         var newXY = getNewXY(x,y,item.child.length,j);
-                        drawSceneDot(newXY.x,newXY.y,itm.id);
+                        drawSceneDot(newXY.x,newXY.y,itm);
                         drawSceneLine(x,y,newXY.x,newXY.y);
-                        // drawSceneLine(150,450,79,379)
+                    });
+                }
+                //新的遍历
+                scenes.forEach(function (itm,j) {
+                    var isDrew = false;
+                    drewDots.forEach(function(node,k){
+                        //点已经画过
+                        if(node.id === itm.id){
+                            isDrew = true;
+                        }
                     });
 
-                }
+
+                    //找儿子
+                    if(itm.child && itm.child.length>0){
+                        if(isDrew){
+                            var isChildDrew = false;
+                            itm.child.forEach(function(child,k){
+                                drewDots.forEach(function(node1,j){
+                                    if(node1.id === child.id){
+                                        isChildDrew = true;
+                                    }
+                                });
+                                //儿子画过
+                                if(isChildDrew){
+                                    //老爹id连线儿子
+                                    getItemFromID(drewDots,itm.id,function(node){
+                                        var x = node.x;
+                                        var y = node.y;
+                                        getItemFromID(drewDots,child.id,function(childNode){
+                                            drawSceneLine(x,y,childNode.x,childNode.y);
+                                        });
+                                    });
+                                }else{
+                                    //老爹id画新儿子
+                                    getItemFromID(drewDots,itm.id,function(node){
+                                        var x = node.x;
+                                        var y = node.y;
+                                        var newXY = getNewXY(x,y,itm.child.length,k);
+                                        drawSceneDot(newXY.x,newXY.y,child);
+                                        drawSceneLine(x,y,newXY.x,newXY.y);
+                                    })
+                                }
+                            });
+
+                        }else {
+
+                            return;
+                        }
+                    }else{
+                        return;
+                    }
+
+
+
+                })
+
+
             });
 
         }
         function getNewXY(x,y,num,i) {
-            var l = 100;
+            var l = 80;
             var arg = (i+1)*Math.PI/(num+1);
             var x1 = Math.floor(x - l*Math.cos(arg));
             var y1 = Math.floor(y - l*Math.sin(arg));
