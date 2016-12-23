@@ -26,7 +26,8 @@
                         {
                             "id":"3",
                             "name":"Workshop"
-                        },
+                        }
+                        ,
                         {
                             "id":"4",
                             "name":"Showroom 2"
@@ -133,7 +134,7 @@
         function beginDraw (x,y,id){
             getItemFromID(scenes,id,function(item){
                 drawSceneDot(x, y,item);
-                //如果第一个点有child
+                //如果第一个点有child 有问题 todo
                 if(item.child && item.child.length>0){
                     item.child.forEach(function(itm,j){
                         var newXY = getNewXY(x,y,item.child.length,j);
@@ -142,6 +143,7 @@
                     });
                 }
                 //新的遍历
+
                 scenes.forEach(function (itm,j) {
                     var isDrew = false;
                     drewDots.forEach(function(node,k){
@@ -222,9 +224,9 @@
             ctx.lineWidth = 1;
             ctx.moveTo(x1,y1);
             // ctx.lineTo(x,y);  //直线
-           ctx.bezierCurveTo(cp1x, cp1y,cp2x,cp2y, x, y); //贝塞尔曲线
-            ctx.stroke();
-//             drawDashLine(x1,y1,x,y,5);
+           //ctx.bezierCurveTo(cp1x, cp1y,cp2x,cp2y, x, y); //贝塞尔曲线
+            //ctx.stroke();
+             drawDashLine(x1,y1,x,y,5);
 
         }
 
@@ -242,7 +244,8 @@
             return {x: x, y: y};
         }
 
-
+        $(html).html('');
+        ctx.clearRect(0,0,300,500);
 
         beginDraw(centerDot[0],centerDot[1],entryID);
         $('#'+entryID).addClass('now');
@@ -264,5 +267,6 @@
         drawEagleEyes(data);
     };
 
+    window.drawEagleEyes = drawEagleEyes;
 
 })();

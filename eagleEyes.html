@@ -16,8 +16,8 @@
 
         .eagle-eyes{
             position: absolute;
-            top:50px;
-            left:50px;
+            top:10px;
+            left:10px;
             width: 300px;
             height: 500px;
             z-index: 2;
@@ -87,8 +87,86 @@
 
             </div>
         </div>
+
+
+        <div style="position:absolute;left: 340px; top:10px;">
+            <textarea name="" id="newData" cols="30" rows="10" style="width: 500px;
+            height: 500px;">
+        {
+        "status":1,
+        "result":{
+            "id":"",
+            "name":"",
+            "entry_scene":"1",
+            "project_id":"",
+            "scenes":[
+                {
+                    "id":"1",
+                    "name":"Aerial panorama",
+                    "child":[
+                        {
+                            "id":"2",
+                            "name":"Showroom"
+                        },
+                        {
+                            "id":"3",
+                            "name":"Workshop"
+                        },
+                        {
+                            "id":"4",
+                            "name":"Showroom 2"
+                        }
+                    ]
+                },
+                {
+                    "id":"2",
+                    "name":"Showroom"
+                },
+                {
+                    "id":"3",
+                    "name":"Workshop",
+                    "child":[
+                        {
+                            "id":"2",
+                            "name":"Showroom"
+                        },
+                        {
+                            "id":"4",
+                            "name":"Showroom 2"
+                        }
+                    ]
+                },
+                {
+                    "id":"4",
+                    "name":"Showroom 2",
+                     "child":[
+                         {
+                             "id":"5",
+                             "name":"Washroom"
+                         }
+                     ]
+                },
+                 {
+                     "id":"5",
+                     "name":"Washroom"
+                 }
+            ]
+            ,
+            "setting":{}
+        }
+    }
+        </textarea>
+            <button id="reDraw">重绘</button>
+        </div>
+
+
     </div>
     <script src="http://cdn.bootcss.com/jquery/1.11.1/jquery.min.js"></script>
     <script src="eagleEyesDIV.js"></script>
+<script>
+    $('#reDraw').click(function(){
+        drawEagleEyes(JSON.parse($('#newData').val()));
+    })
+</script>
 </body>
 </html>
