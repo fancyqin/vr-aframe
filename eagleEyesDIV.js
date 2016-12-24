@@ -88,13 +88,11 @@
         var centerDot = [150,450]; //起始中心点
         var drewDots = [];
 
-        if(!data){return;}
-
-
+        
         var entryID = data.result.entry_scene;
         var scenes = data.result.scenes;
 
-
+        if(!data){return;}
 
 
 
@@ -140,25 +138,45 @@
                         var newXY = getNewXY(x,y,item.child.length,j);
                         drawSceneDot(newXY.x,newXY.y,itm);
                         drawSceneLine(x,y,newXY.x,newXY.y);
+
+                        
+
                     });
+                    item.child.forEach(function(itm,j){
+                        DrawFromFather(itm)
+                    })
                 }
                 //新的遍历
 
-                scenes.forEach(function (itm,j) {
+                scenes.forEach(function (itm) {
+
+                    DrawFromFather(itm);
+
+                });
+
+                //从老爹节点开始找
+                function DrawFromFather (itm){
                     var isDrew = false;
                     drewDots.forEach(function(node,k){
-                        //点已经画过
+                        //老爹节点已经画过
                         if(node.id === itm.id){
                             isDrew = true;
                         }
                     });
 
+                    // 老爹没有画过先跳过
+                    if (!isDrew){
+                        return;
+                    }
+
 
                     //找儿子
-                    if(itm.child && itm.child.length>0){
-                        if(isDrew){
-                            var isChildDrew = false;
-                            itm.child.forEach(function(child,k){
+                    getItemFromID(scenes,itm.id,function (father) {
+                        if(father.child && father.child.length>0){
+
+                            var childWithoutDrew = []; //没画过的儿子
+                            father.child.forEach(function(child,k){
+                                var isChildDrew = false;
                                 drewDots.forEach(function(node1,j){
                                     if(node1.id === child.id){
                                         isChildDrew = true;
@@ -167,7 +185,7 @@
                                 //儿子画过
                                 if(isChildDrew){
                                     //老爹id连线儿子
-                                    getItemFromID(drewDots,itm.id,function(node){
+                                    getItemFromID(drewDots,father.id,function(node){
                                         var x = node.x;
                                         var y = node.y;
                                         getItemFromID(drewDots,child.id,function(childNode){
@@ -175,29 +193,27 @@
                                         });
                                     });
                                 }else{
-                                    //老爹id画新儿子
-                                    getItemFromID(drewDots,itm.id,function(node){
-                                        var x = node.x;
-                                        var y = node.y;
-                                        var newXY = getNewXY(x,y,itm.child.length,k);
-                                        drawSceneDot(newXY.x,newXY.y,child);
-                                        drawSceneLine(x,y,newXY.x,newXY.y);
-                                    })
+                                    //把新儿子放入新儿子数组
+                                    childWithoutDrew.push(child);
+
                                 }
                             });
 
-                        }else {
-
+                            childWithoutDrew.forEach(function (newChild,n) {
+                                getItemFromID(drewDots,father.id,function(node){
+                                    var x = node.x;
+                                    var y = node.y;
+                                    var newXY = getNewXY(x,y,childWithoutDrew.length,n);
+                                    drawSceneDot(newXY.x,newXY.y,newChild);
+                                    drawSceneLine(x,y,newXY.x,newXY.y);
+                                })
+                            });
+                        }else{
                             return;
                         }
-                    }else{
-                        return;
-                    }
+                    });
 
-
-
-                })
-
+                };
 
             });
 
@@ -224,9 +240,9 @@
             ctx.lineWidth = 1;
             ctx.moveTo(x1,y1);
             // ctx.lineTo(x,y);  //直线
-           //ctx.bezierCurveTo(cp1x, cp1y,cp2x,cp2y, x, y); //贝塞尔曲线
-            //ctx.stroke();
-             drawDashLine(x1,y1,x,y,5);
+           ctx.bezierCurveTo(cp1x, cp1y,cp2x,cp2y, x, y); //贝塞尔曲线
+            ctx.stroke();
+            //  drawDashLine(x1,y1,x,y,5);
 
         }
 
