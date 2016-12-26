@@ -72,21 +72,17 @@
         }
     };
 
-
-
-
-
-
     var drawEagleEyes = function(data){
 
         var html = document.getElementById('eagleHTML');
 
         var canvas = document.getElementById('eagleCANVAS');
-        var ctx = canvas.getContext("2d");
+
+        var ctx = canvas.getContext ?  canvas.getContext("2d") : false;
 
         var DotHTML = '<div id="{id}" class="eagle-dot-wrap"><div class="eagle-dot"></div><span>{name}</span></div>';
         var centerDot = [150,450]; //起始中心点
-        var drewDots = [];
+        var drewDots = []; //画过的点集合
 
         
         var entryID = data.result.entry_scene;
@@ -95,9 +91,7 @@
         if(!data){return;}
 
 
-
-
-
+        //遍历id回调
         function getItemFromID (obj,id,cb){
             obj.forEach(function(item,i){
                 if(id === item.id){
@@ -128,7 +122,7 @@
             drewDots.push({id:item.id,x:x,y:y});
         }
 
-
+        //开始画
         function beginDraw (x,y,id){
             getItemFromID(scenes,id,function(item){
                 drawSceneDot(x, y,item);
@@ -166,6 +160,7 @@
 
                     // 老爹没有画过先跳过
                     if (!isDrew){
+
                         return;
                     }
 
@@ -218,6 +213,8 @@
             });
 
         }
+
+        //获取新点的坐标
         function getNewXY(x,y,num,i) {
             var l = 80;
             var arg = (i+1)*Math.PI/(num+1);
@@ -229,7 +226,7 @@
 
         //画线
         function drawSceneLine(x1,y1,x,y){
-
+            if(!ctx){return;}
             var cp1x =  x1 + 3*(x - x1)/7;
             var cp1y =  y1;
             var cp2x = x1 + 4*(x - x1)/7;
@@ -246,25 +243,43 @@
 
         }
 
+        //初始化
+        function init(){
+            $(html).html('');
+            ctx && ctx.clearRect(0,0,300,500);
 
-        //获取event 坐标
-        function getEventPosition(ev){
-            var x, y;
-            if (ev.layerX || ev.layerX == 0) {
-                x = ev.layerX;
-                y = ev.layerY;
-            } else if (ev.offsetX || ev.offsetX == 0) { // Opera
-                x = ev.offsetX;
-                y = ev.offsetY;
-            }
-            return {x: x, y: y};
+            beginDraw(centerDot[0],centerDot[1],entryID);
+            $('#'+entryID).addClass('now');
         }
 
-        $(html).html('');
-        ctx.clearRect(0,0,300,500);
+        //forEach support IE8
+        if ( !Array.prototype.forEach ) {
+            Array.prototype.forEach = function forEach( callback, thisArg ) {
+                var T, k;
+                if ( this == null ) {
+                    throw new TypeError( "this is null or not defined" );
+                }
+                var O = Object(this);
+                var len = O.length >>> 0;
+                if ( typeof callback !== "function" ) {
+                    throw new TypeError( callback + " is not a function" );
+                }
+                if ( arguments.length > 1 ) {
+                    T = thisArg;
+                }
+                k = 0;
+                while( k < len ) {
+                    var kValue;
+                    if ( k in O ) {
+                        kValue = O[ k ];
+                        callback.call( T, kValue, k, O );
+                    }
+                    k++;
+                }
+            };
+        }
 
-        beginDraw(centerDot[0],centerDot[1],entryID);
-        $('#'+entryID).addClass('now');
+        init();
 
 
         $(html).on('click','.eagle-dot',function(e){
@@ -278,6 +293,8 @@
 
 
     };
+
+
 
     window.onload=function() {
         drawEagleEyes(data);
