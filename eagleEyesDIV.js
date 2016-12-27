@@ -20,10 +20,6 @@
                     "name":"Aerial panorama",
                     "child":[
                         {
-                            "id":"2",
-                            "name":"Showroom"
-                        },
-                        {
                             "id":"3",
                             "name":"Workshop"
                         }
@@ -43,10 +39,6 @@
                     "name":"Workshop",
                     "child":[
                         {
-                            "id":"2",
-                            "name":"Showroom"
-                        },
-                        {
                             "id":"4",
                             "name":"Showroom 2"
                         }
@@ -54,18 +46,12 @@
                 },
                 {
                     "id":"4",
-                    "name":"Showroom 2",
-                     "child":[
-                         {
-                             "id":"5",
-                             "name":"Washroom"
-                         }
-                     ]
+                    "name":"Showroom 2"
                 },
-                 {
+                {
                      "id":"5",
                      "name":"Washroom"
-                 }
+                }
             ]
             ,
             "setting":{}
@@ -83,6 +69,7 @@
         var DotHTML = '<div id="{id}" class="eagle-dot-wrap"><div class="eagle-dot"></div><span>{name}</span></div>';
         var centerDot = [150,450]; //起始中心点
         var drewDots = []; //画过的点集合
+        var notDrewDots = []; //没画过的点
 
         
         var entryID = data.result.entry_scene;
@@ -120,6 +107,14 @@
                 y1 = y - thisItem[0].offsetHeight/ 2;
             thisItem.css({'left':x1,'top':y1});
             drewDots.push({id:item.id,x:x,y:y});
+            if(notDrewDots.length >0){
+                notDrewDots.forEach(function(notDrew,i){
+                    if(notDrew.id === item.id){
+                        notDrewDots.splice(i,1);
+                    }
+                })
+            }
+
         }
 
         //开始画
@@ -158,9 +153,17 @@
                         }
                     });
 
-                    // 老爹没有画过先跳过
+                    // 老爹没有画过先跳过 转遗留节点处理
                     if (!isDrew){
-
+                        var isDrewInArray = false;
+                        notDrewDots.forEach(function(item){
+                            if(item.id === item.id);{
+                                isDrewInArray = true;
+                            }
+                        });
+                        if(!isDrewInArray){
+                            notDrewDots.push({id:itm.id});
+                        }
                         return;
                     }
 
@@ -190,7 +193,12 @@
                                 }else{
                                     //把新儿子放入新儿子数组
                                     childWithoutDrew.push(child);
-
+                                    //移出未画数组
+                                    notDrewDots.forEach(function(notDrew,i){
+                                        if(notDrew.id === child.id){
+                                            notDrewDots.splice(i,1);
+                                        }
+                                    })
                                 }
                             });
 
@@ -200,7 +208,7 @@
                                     var y = node.y;
                                     var newXY = getNewXY(x,y,childWithoutDrew.length,n);
                                     drawSceneDot(newXY.x,newXY.y,newChild);
-                                    drawSceneLine(x,y,newXY.x,newXY.y);
+                                    drawSceneLine(x,y,newXY.x,newXY.y)
                                 })
                             });
                         }else{
@@ -208,9 +216,15 @@
                         }
                     });
 
-                };
-
+                }
             });
+
+            //有遗留节点，生成新的树开始画
+            if(notDrewDots.length>0){
+                notDrewDots.forEach(function(item){
+                    beginDraw(x,y+20,item.id);
+                })
+            }
 
         }
 
