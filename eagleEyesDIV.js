@@ -20,19 +20,40 @@
                     "name":"Aerial panorama",
                     "child":[
                         {
+                            "id":"2",
+                            "name":"Showroom"
+                        },
+                        {
                             "id":"3",
                             "name":"Workshop"
-                        }
-                        ,
+                        },
                         {
                             "id":"4",
                             "name":"Showroom 2"
+                        },
+                        {
+                            "id":"5",
+                            "name":"Showroomfafa"
                         }
                     ]
                 },
                 {
                     "id":"2",
-                    "name":"Showroom"
+                    "name":"Showroom",
+                    "child":[
+                        {
+                            "id":"3",
+                            "name":"Showroom"
+                        },
+                        {
+                            "id":"4",
+                            "name":"Showroom 2"
+                        },
+                        {
+                            "id":"6",
+                            "name":"Showroom 2"
+                        }
+                    ]
                 },
                 {
                     "id":"3",
@@ -41,19 +62,42 @@
                         {
                             "id":"4",
                             "name":"Showroom 2"
-                        }
+                        },
+                        {
+                            "id":"2",
+                            "name":"Showroom 2"
+                        },
+                        {
+                            "id":"5",
+                            "name":"Showroom 2"
+                        },
                     ]
                 },
                 {
                     "id":"4",
-                    "name":"Showroom 2"
+                    "name":"Showroom 2",
+                    "child":[
+                        {
+                            "id":"5",
+                            "name":"Washroom"
+                        }
+                    ]
                 },
                 {
                      "id":"5",
                      "name":"Washroom"
+                },
+                {
+                    "id":"6",
+                    "name":"Washroom",
+                    "child":[
+                        {
+                            "id":"7",
+                            "name":"Washroom"
+                        }
+                    ]
                 }
-            ]
-            ,
+            ],
             "setting":{}
         }
     };
@@ -71,7 +115,6 @@
         var drewDots = []; //画过的点集合
         var notDrewDots = []; //没画过的点
 
-        
         var entryID = data.result.entry_scene;
         var scenes = data.result.scenes;
 
@@ -119,6 +162,7 @@
 
         //开始画
         function beginDraw (x,y,id){
+
             getItemFromID(scenes,id,function(item){
                 drawSceneDot(x, y,item);
                 //如果第一个点有child 有问题 todo
@@ -222,7 +266,7 @@
             //有遗留节点，生成新的树开始画
             if(notDrewDots.length>0){
                 notDrewDots.forEach(function(item){
-                    beginDraw(x,y+20,item.id);
+                    beginDraw(x + 70,y,item.id);
                 })
             }
 
@@ -230,7 +274,7 @@
 
         //获取新点的坐标
         function getNewXY(x,y,num,i) {
-            var l = 80;
+            var l = 60;
             var arg = (i+1)*Math.PI/(num+1);
             var x1 = Math.floor(x - l*Math.cos(arg));
             var y1 = Math.floor(y - l*Math.sin(arg));
@@ -306,7 +350,66 @@
         })
 
 
+
+
+
+        function setWrapSize(data){
+            var scenes = data.result.scenes;
+            var forest = [];
+            var boxED = [];
+
+            scenes.forEach(function(father){
+                if(father.id === entryID){
+                    forest.push({"id":entryID,"child":[]});
+                    boxED.push(entryID);
+                    if(father.child && father.child.length>0){
+
+                        father.child.forEach(function(child){
+                            //放入forest
+                            forest.forEach(function(fatherTree){
+                                if(fatherTree.id === entryID){
+                                    fatherTree.child.push(child);
+                                }
+                            });
+                            boxED.push(child.id);
+                        });
+                        father.child.forEach(function(child){
+                            getItemFromID(scenes,child.id,function(newFather){
+                                if(newFather.child && newFather.child.length>0){
+                                    newFather.child.forEach(function (newFathersChild) {
+                                        if(boxED.indexOf(newFathersChild.id) === -1){
+                                            //todo
+                                        }else{
+
+                                        }
+                                    })
+                                }
+                            })
+                        })
+                    }
+                }
+            })
+        }
+
+        setWrapSize(data);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     };
+
+
 
 
 
