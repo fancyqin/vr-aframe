@@ -12,8 +12,8 @@
             background: rgba(0,0,0,0.6);
             border-radius: 4px;
         }
-        .random-road .eagle-html{
-            z-index: 4;
+        .random-road .random-canvas{
+            z-index: 1;
         }
         .random-road .random-dot-wrap{
             position: absolute;
@@ -28,7 +28,7 @@
             width: 12px;
             height: 12px;
             border-radius: 50%;
-            background: #7a7b7c;
+            background: #666666;
             border: 2px solid #fff;
             z-index: 5;
             cursor: pointer;
@@ -77,13 +77,124 @@
         .random-road .random-dot-wrap.now .random-dot{
             border-color: #E64545;
             background: #E64545;
+            box-shadow: 0 0 0 3px rgba(255,255,255,.5);
         }
     </style>
 </head>
 <body>
 
+<div style="position:absolute;left: 340px; top:10px;">
+            <textarea name="" id="newData" cols="30" rows="10" style="width: 500px;
+            height: 500px;">
+{
+        "id":"",
+        "name":"",
+        "entry_scene":"1",
+        "project_id":"",
+        "scenes":[
+            {
+                "scene_id":"1",
+                "name":"Aerial panorama",
+                "child":[
+                    {
+                        "scene_id":"2",
+                        "name":"Showroom"
+                    },
+                    {
+                        "scene_id":"3",
+                        "name":"Workshop"
+                    },
+                    {
+                        "scene_id":"4",
+                        "name":"Showroom 2"
+                    },
+                    {
+                        "scene_id":"5",
+                        "name":"Showroomfafa"
+                    }
+                ]
+            },
+            {
+                "scene_id":"2",
+                "name":"Showroom",
+                "child":[
+                    {
+                        "scene_id":"3",
+                        "name":"Showroom"
+                    },
+                    {
+                        "scene_id":"4",
+                        "name":"Showroom 2"
+                    },
+                    {
+                        "scene_id":"6",
+                        "name":"Showroom 2"
+                    }
+                ]
+            },
+            {
+                "scene_id":"3",
+                "name":"Workshop",
+                "child":[
+                    {
+                        "scene_id":"4",
+                        "name":"Showroom 2"
+                    },
+                    {
+                        "scene_id":"2",
+                        "name":"Showroom 2"
+                    },
+                    {
+                        "scene_id":"5",
+                        "name":"Showroom 2"
+                    },
+                    {
+                        "scene_id":"7",
+                        "name":"Washroom"
+                    }
+                ]
+            },
+            {
+                "scene_id":"4",
+                "name":"Showroom 2",
+                "child":[
+                    {
+                        "scene_id":"5",
+                        "name":"Washroom"
+                    }
+                ]
+            },
+            {
+                "scene_id":"5",
+                "name":"Washroom"
+            },
+            {
+                "scene_id":"6",
+                "name":"Washroom",
+                "child":[
+                    {
+                        "scene_id":"7",
+                        "name":"Washroom"
+                    }
+                ]
+            }
+        ],
+        "setting":{}
+    }
+        </textarea>
+    <button id="reDraw">Random</button>
+</div>
+
+
+
 <script src="http://cdn.bootcss.com/jquery/1.11.1/jquery.min.js"></script>
 <script src="randomRoad.js"></script>
+
+<script>
+    $('#reDraw').click(function(){
+        randomRoad(JSON.parse($('#newData').val()));
+    })
+</script>
 
 </body>
 </html>
