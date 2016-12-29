@@ -152,7 +152,15 @@
         scenes.forEach(function(item,i){
             var num = (i%2)*2 - 1;
 
-            var random = Math.ceil(Math.random()*(WRAP_W/2));
+
+            //随机出现
+            //var random = Math.ceil(Math.random()*(WRAP_W/2));
+
+            //根据id charCodeAt得到随机数
+
+            var random = item.scene_id.charCodeAt(0)%(WRAP_W/2);
+
+
 
             var x = WRAP_W_PAD + WRAP_W/2 + random*num;
             var y = WRAP_H_PAD + ITEM_H*i;
